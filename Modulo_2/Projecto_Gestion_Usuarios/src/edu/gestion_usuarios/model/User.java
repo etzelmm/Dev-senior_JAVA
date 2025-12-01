@@ -65,6 +65,7 @@ public class User {
         this.currencyActions = currencyActions;
     }
 
+
     @Override
     public String toString() {
         return String.format("Usuario: %s%nNombre de usuario: %s%nId: %s%nRol: %s%n", getFullName(), getUserName(), getUserId(), getRole().toString());

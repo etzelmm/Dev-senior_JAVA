@@ -2,12 +2,18 @@ package edu.gestion_usuarios.service;
 
 import edu.gestion_usuarios.model.User;
 import edu.gestion_usuarios.model.Role;
-
-import java.time.LocalDateTime;
-
-import edu.gestion_usuarios.model.Action;
+import edu.gestion_usuarios.repository.Dao;
+import edu.gestion_usuarios.repository.ActionDao;
 
 public class UserService {
+
+    private Dao users;
+    private ActionDao actions = new ActionDao();
+
+    public UserService(Dao users) {
+        this.users = users;
+    }
+
 
     /**
      * validate if the id exist 
@@ -15,11 +21,9 @@ public class UserService {
      * @param userId = the id you are validate
      * @return true if exist, false if not exist
      */
-    public Boolean idExist (User[] users, String userId) {
-        for (int i = 0; i < users.length; i++) {
-            if (users[i].getUserId().equalsIgnoreCase(userId)) {
-                return  true;
-            }
+    public Boolean idExist (String userId) {
+        if (users.find(userId, null) != null) {
+            return true;
         }
         return false;
     }
@@ -30,28 +34,11 @@ public class UserService {
      * @param userName = the user name you are validate
      * @return true if exist, false if not exist
      */
-    public Boolean userNameExist (User[] users, String userName) {
-        for (int i = 0; i < users.length; i++) {
-            if (users[i].getUserName().equalsIgnoreCase(userName)) {
-                return  true;
-            }
+    public Boolean userNameExist (String userName) {
+        if (users.find(null, userName) != null) {
+            return  true;
         }
         return false;
-    }
-
-    /**
-     * validates if username exist and return the index in users array
-     * @param users = array of users
-     * @param userName = of user
-     * @return index in array 
-     */
-    public Integer getIndexByUserName (User[] users, String userName) {
-        for (int i = 0; i < users.length; i++) {
-            if (users[i].getUserName().equalsIgnoreCase(userName)) {
-                return  i;
-            }
-        }
-        return users.length + 1;
     }
 
     /**
@@ -66,18 +53,15 @@ public class UserService {
      * @param role = of new user
      * @return ibject new user to add on array
      */
-    public User createUser(User[] users, User user, String fullName, String userId, String userName, String password, Role role) {
-        if (user.getRole() != Role.ADMINISTRATOR) {
-            System.err.println("No tienes los permisos nececesarios para crear un usuario");
-            return null;         
-        } else if (idExist(users, userId) || userNameExist(users, userName)) {
+    public void createUser(User userSession, String fullName, String userId, String userName, String password, Role role) {
+        if (userSession.getRole() != Role.ADMINISTRATOR) {
+            System.err.println("No tienes los permisos nececesarios para crear un usuario");        
+        } else if (idExist(userId) || userNameExist(userName)) {
             System.err.println("El id de usuario ya existe ");
-            return null;
         } else {
-            var actionCreate = new Action("Creacion", LocalDateTime.now());
-            user.getActions()[user.getCurrencyActions()] = actionCreate;
-            user.setCurrencyActions(user.getCurrencyActions() + 1);
-            return new User(fullName, userId, userName, password, role);
+            actions.addActionToUser(userSession, "Creacion");
+            users.create(new User(fullName, userId, userName, password, role));
+            System.out.println("usuario creado");
         }
     }
 
@@ -86,21 +70,21 @@ public class UserService {
      * @param users = array of users
      * @param user = user actioner
      * @param userId = of user shearch
-     * @return String whit info user
+     * @return object user
      */
-    public String shearchUserById(User[] users, User user, String userId) {
-        for (int i = 0; i < users.length; i++) {
-            if (users[i].getUserId().equalsIgnoreCase(userId)) {
-                if (user.getRole() == Role.ADMINISTRATOR) {
-                    return users[i].toString();
-                } else if (user.getUserId().equals(userId)) {
-                    return user.toString();
-                } else {
-                    return "No cuenta con los permisos para buscar usuarios";
-                }
+    public User shearchUserById(User user, String userId) {
+        if (idExist(userId)) {
+            if (user.getRole() == Role.ADMINISTRATOR) {
+                return users.find(userId, null);
+            } else if (user.getUserId().equals(userId)) {
+                return user;
+            } else {
+                System.err.println("No cuenta con los permisos para buscar usuarios");
+                return null;
             }
-        } 
-        return user.toString();
+        }
+        System.err.printf("usuario con id: %s no existe%n", userId); 
+        return null;
     }
 
     /**
@@ -108,44 +92,87 @@ public class UserService {
      * @param users = array of users
      * @param user = user actioner
      * @param userName = of user shearch
-     * @return String whit info user
+     * @return object user
      */
-    public String shearchUserByUserName(User[] users, User user, String UserName) {
-        for (int i = 0; i < users.length; i++) {
-            if (idExist(users, UserName)) {
+    public User shearchUserByUserName(User user, String userName) {
+            if (userNameExist(userName)) {
                 if (user.getRole() == Role.ADMINISTRATOR) {
-                    return users[getIndexByUserName(users, UserName)].toString();
-                } else if (user.getUserName().equals(UserName)) {
-                    return user.toString();
+                    return users.find(null, userName);
+                } else if (user.getUserName().equals(userName)) {
+                    return user;
                 } else {
-                    return "No cuenta con los permisos para buscar usuarios";
+                    System.err.println("No cuenta con los permisos para buscar usuarios");
+                    return null;
                 }
             }
-        } 
-        return user.toString();
+        System.err.printf("UserName: %s no existe%n", userName); 
+        return null;
     }
 
-    public Boolean login(User[] users, String userName, String password) {
-        if (userNameExist(users, userName)) {
-            if (users[getIndexByUserName(users, userName)].getPassword().equals(password)) {
-                return true;
+    public User login(String userName, String password) {
+        User userSession;
+        var userSessionIndex = users.getIndexByUsername(userName);
+        if (userSessionIndex == null) {
+            return null;
+        }
+        userSession = users.getUsers()[users.getIndexByUsername(userName)];    
+        if (userNameExist(userName)) {
+            if (userSession.getPassword().equals(password)) {
+                actions.addActionToUser(userSession,"Login");
+                return userSession;
             } else {
-                return false;
+                System.err.println("Contrasenia incorrecta");
+                return null;
             }
         } else{
             System.err.println("Usuario no Existe");
-            return false;
+            return null;
         }
     }
 
-    public void updatePassword(User user, String password, String newPassword) {
-        if (user.getPassword().equals(password)) {
-            user.setPassword(newPassword);
-        } else {
-            System.err.println("Contrasenia incorrecta");
+    public void updatePassword(User userSession, String password, String newPassword) {
+            if (userSession.getPassword().equals(password)) {
+                users.update(userSession, newPassword, null, null);
+                actions.addActionToUser(userSession, "Actualizacion de contrasenia");
+            } else {
+                System.err.println("Contrasenia incorrecta");
+            }
+    }
+
+    public void updateFullName(User user, String newFullName) {
+        users.update(user, null, newFullName, null);
+        actions.addActionToUser(user, "Actualizacion de nombre");
+    }
+    
+    public void deleteUser(User userSession, User userToDelete) {
+        if(userSession.getRole() == Role.ADMINISTRATOR) {
+            users.delete(userToDelete);
+            actions.addActionToUser(userSession, "Elimiacion de usuario");
+            System.out.println("usuario eliminado");
+        }else {
+            System.err.println("No tiene permisos para borrar usuarios");
         } 
     }
 
+    public void displayActionsDao(User user) {
+        displayActionsDao(user);
+    }
+
+    public void updateRole(User userSession, User user, Role role) {
+        if (userSession.getRole() == Role.ADMINISTRATOR) {
+            users.update(user, null, null, role);
+            actions.addActionToUser(userSession, "Actualizacion de rol");
+        }
+        System.err.println("No tiene permisos Actulizar usuarios");
+    }
+
+    public String displayUser(User user)  {
+        return user.toString();
+    }
+
+    public void displayUsersDao() {
+        users.displayUsers();
+    }
 }
 
 

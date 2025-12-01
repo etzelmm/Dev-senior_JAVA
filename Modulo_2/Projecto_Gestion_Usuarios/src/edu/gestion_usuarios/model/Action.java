@@ -7,9 +7,9 @@ public class Action {
     private String description;
     private LocalDateTime date;
 
-    public Action(String description, LocalDateTime date) {
+    public Action(String description) {
         this.description = description;
-        this.date = date;
+        this.date = LocalDateTime.now();
     }
 
     public String getDescription() {
