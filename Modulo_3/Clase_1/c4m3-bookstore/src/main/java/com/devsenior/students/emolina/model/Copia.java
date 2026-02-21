@@ -3,7 +3,8 @@ package com.devsenior.students.emolina.model;
 public class Copia {
     private Integer id;
     private Estado estado;
-    
+    private Libro libro;
+
     public Integer getId() {
         return id;
     }
