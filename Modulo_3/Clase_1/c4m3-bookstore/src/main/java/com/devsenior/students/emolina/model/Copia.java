@@ -5,6 +5,9 @@ public class Copia {
     private Estado estado;
     private Libro libro;
 
+    public Libro getLibro() {
+        return libro;
+    }
     public Integer getId() {
         return id;
     }

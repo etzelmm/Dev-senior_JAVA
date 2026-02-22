@@ -5,8 +5,14 @@ import java.time.LocalDate;
 public class Prestamo {
     private Lector usuario;
     private Copia copia;
-    private LocalDate fechaPrestamo;
-    
+    private LocalDate fechaPrestamo; 
+
+    public Prestamo(Lector usuario, Copia copia) {
+        this.usuario = usuario;
+        this.copia = copia;
+        this. fechaPrestamo = LocalDate.now();
+    }
+
     public Lector getUsuario() {
         return usuario;
     }
