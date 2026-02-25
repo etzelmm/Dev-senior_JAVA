@@ -1,0 +1,4 @@
+2026-02-25 09:11:37 INFO  Main:10 - Mensaje de INFO
+2026-02-25 09:11:37 WARN  Main:13 - mensaje warn
+2026-02-25 09:11:37 ERROR Main:14 - Mensaje error
+2026-02-25 09:11:37 FATAL Main:15 - mensaje fatal
