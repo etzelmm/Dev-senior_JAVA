@@ -1,0 +1,19 @@
+@startuml
+
+class Curso {
+    String codCurso
+    String nombre
+    int capacidad
+}
+
+class Estudiante{
+    String id
+    String nombre
+    String email
+}
+
+Curso --right Estudiante 
+
+
+
+@enduml
