@@ -68,7 +68,10 @@ public class SatelliteService {
 
     public void showMesures(String id){
         try {
-            System.out.println(getSatellite(id).getMesures());
+            Satellite satellite = getSatellite(id);
+            for(Mesure mesure: satellite.getMesures()) {
+                System.out.println(mesure);
+            }
         } catch (IdAlreadyExist e) {
             System.out.println("No se pueden mostrar medidas ya que: " + e);
         }
