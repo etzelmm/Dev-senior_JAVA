@@ -1,0 +1,50 @@
+@startuml
+
+class Satelite{
+    String id
+    EstadoSatelite estado
+    Set<Medicio> historialMediciones
+}
+
+class Medicion {
+    double nivelRadicion
+
+}
+
+enum EstadoSatelite{
+    ACTIVO
+    INACTIVO
+    MANTENIMIENTO
+}
+
+class servicioSatelite{
+    Map<Satelite> satelites
+    public addSatelite()
+    public estadoSatelite()
+    public agregarMedicion()
+    public consultarHistorial()
+    public cambiarEstado()
+}
+
+class Menu{
+    Scanner input
+    mostrarMenu()
+    ejecutar()
+}
+
+class ValorRadiacionInvalidoException{}
+class EstadoInvalidoExceptio{}
+class IdYaExisteException{}
+
+Satelite --"tiene" EstadoSatelite
+Satelite --"tiene" Medicion
+servicioSatelite --"gestiona" Satelite
+Menu --"despliega" servicioSatelite
+servicioSatelite -- ValorRadiacionInvalidoException
+servicioSatelite -- EstadoInvalidoExceptio
+servicioSatelite -- IdYaExisteException
+
+
+
+
+@enduml
