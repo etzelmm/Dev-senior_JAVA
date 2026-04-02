@@ -1,12 +1,14 @@
 package com.devsenior.students.eamolinam.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Satellite {
     private String id;
     SatelliteState state;
-    Set<Mesure> mesures = new LinkedHashSet<>();
+    List<Mesure> mesures = new ArrayList<>();
 
 
     public Satellite(String id, SatelliteState state) {
@@ -30,12 +32,12 @@ public class Satellite {
     }
 
 
-    public Set<Mesure> getMesures() {
+    public List<Mesure> getMesures() {
         return mesures;
     }
 
 
-    public void setMesures(Set<Mesure> mesures) {
+    public void setMesures(List<Mesure> mesures) {
         this.mesures = mesures;
     }
     

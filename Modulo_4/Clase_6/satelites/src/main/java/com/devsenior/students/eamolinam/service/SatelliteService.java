@@ -60,7 +60,8 @@ public class SatelliteService {
             throw new InavidMesureException("No es podible tener niveles de radiacion negativos");
         }
         try {
-            getSatellite(id).getMesures().add(new Mesure(radiationLevel));
+            Satellite satellite = getSatellite(id);
+            satellite.getMesures().add( satellite.getMesures().size(), new Mesure(radiationLevel));
         } catch (IdAlreadyExist e) {
             System.out.println("No se agrego medicion ya que: " + e);
         }
@@ -69,8 +70,8 @@ public class SatelliteService {
     public void showMesures(String id){
         try {
             Satellite satellite = getSatellite(id);
-            for(Mesure mesure: satellite.getMesures()) {
-                System.out.println(mesure);
+            for(int i = satellite.getMesures().size() -1 ; i >= 0; i--) {
+                System.out.println(satellite.getMesures().get(i));
             }
         } catch (IdAlreadyExist e) {
             System.out.println("No se pueden mostrar medidas ya que: " + e);
