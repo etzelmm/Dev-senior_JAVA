@@ -1,0 +1,30 @@
+###
+GET http://localhost:8080/api/books
+
+###
+POST http://localhost:8080/api/books
+Content-Type: application/json
+
+{
+    "isbn":"123456",
+    "title":"Bestiario",
+    "author":"Maxwell"
+}
+
+###
+PUT  http://localhost:8080/api/books/5345
+Content-Type: application/json
+
+{
+    "isbn": "5345",
+    "title": "amor y yo",
+    "author": "tmomanga"
+}
+
+###
+GET  http://localhost:8080/api/books/123456
+
+###
+DELETE   http://localhost:8080/api/books/9879
+
+
