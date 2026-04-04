@@ -50,4 +50,9 @@ public class BookController { // CONTROLADOR  o Servicio RESTful (porque tienen 
     public void deleteBook(@PathVariable String isbn){
         bookService.deleteBook(isbn);
     }
+
+    @PutMapping("/{isbn}/marcarLeido")
+    public void markAsRead(@PathVariable String isbn){
+        bookService.markRead(isbn);
+    }
 }

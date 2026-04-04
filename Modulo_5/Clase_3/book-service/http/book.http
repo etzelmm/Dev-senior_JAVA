@@ -8,7 +8,8 @@ Content-Type: application/json
 {
     "isbn":"123456",
     "title":"Bestiario",
-    "author":"Maxwell"
+    "author":"Maxwell",
+    "leido" : false
 }
 
 ###
@@ -27,4 +28,5 @@ GET  http://localhost:8080/api/books/123456
 ###
 DELETE   http://localhost:8080/api/books/9879
 
-
+###
+PUT http://localhost:8080/api/books/123456/marcarLeido

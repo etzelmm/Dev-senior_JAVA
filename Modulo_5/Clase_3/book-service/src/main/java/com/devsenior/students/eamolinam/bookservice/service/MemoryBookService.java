@@ -49,5 +49,10 @@ public class MemoryBookService implements BookService{
         var book = findbyId(id);
         books.remove(book);
     }
+
+    @Override
+    public void markRead(String id) {
+        findbyId(id).setLeido(true);
+    }
     
 }

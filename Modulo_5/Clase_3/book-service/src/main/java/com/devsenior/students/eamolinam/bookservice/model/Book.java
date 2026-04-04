@@ -4,14 +4,16 @@ public class Book {
     private String isbn;
     private String title;
     private String author;
+    private boolean leido;
 
     public Book(){   
     }
 
-    public Book(String isbn, String title, String author) {
+    public Book(String isbn, String title, String author, boolean leido) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
+        this.leido = leido;
     }
 
     public String getIsbn() {
@@ -38,6 +40,13 @@ public class Book {
         this.author = author;
     }
 
+    public boolean isLeido() {
+        return leido;
+    }
+
+    public void setLeido(boolean leido) {
+        this.leido = leido;
+    }
     
     
 }
